@@ -1,33 +1,40 @@
 package org.example;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
-/**
- * Класс для записи текстовой строки в файл.
- * При возникновении ошибки ввода-вывода выбрасывает непроверяемое исключение RuntimeException.
- */
+
 public class Record {
+    private static final String EXIT_COMMAND = "exit";
+    private static final String EXIT_COMMAND_RUS = "выход";
 
-    /**
-     * Записывает переданную текстовую строку в файл с указанным именем.
-     * Используется try-with-resources для автоматического закрытия потока.
-     *
-     * @param text     текст, который необходимо записать в файл
-     * @param fileName имя файла (может включать путь), в который будет произведена запись
-     */
-    public void getRecord(String text, String fileName) {
-        try (
-                FileOutputStream fos = new FileOutputStream(fileName)) {
+    public void getRecord(String fileName) {
 
-            // Преобразуем строку в массив байтов (кодировка по умолчанию — платформенная)
-            byte[] buffer = text.getBytes();
+        try (Scanner scanner = new Scanner(System.in);
+             FileOutputStream fileOutput = new FileOutputStream(fileName, true);
+             BufferedOutputStream bufferedOutput = new BufferedOutputStream(fileOutput)) {
+            System.out.println("Enter a name or 'exit' to complete the input: ");
 
-            // Записываем все байты из буфера в выходной поток
-            // параметры: данные, смещение (0 — с начала), длина (весь массив)
-            fos.write(buffer, 0, buffer.length);
+            while (true) {
+                System.out.println("Name: ");
+                String name = scanner.nextLine();
 
+                if (name.equalsIgnoreCase(EXIT_COMMAND) || name.equalsIgnoreCase(EXIT_COMMAND_RUS) ) {
+                    System.out.println("Recording finished");
+                    break;
+                }
+
+                String recordLine = name + System.lineSeparator();
+
+                byte[] buffer = recordLine.getBytes(StandardCharsets.UTF_8);
+                bufferedOutput.write(buffer, 0, buffer.length);
+            }
+            bufferedOutput.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Error writing to file: " + e.getMessage());
+            throw new RuntimeException("Failed to record names to " + fileName, e);
         }
     }
 }
+
