@@ -2,21 +2,20 @@ package org.example;
 
 
 import java.io.File;
+import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
-        String FILE_NAME = "names.txt";
-        String FOLDER_NAME = "name_list";
+    public static void main(String[] args) throws IOException {
+        String FILE_NAME = "pages.txt";
+        String FOLDER_NAME = "book";
         String PATH = FOLDER_NAME + File.separator + FILE_NAME;
 
         File folder = new File(FOLDER_NAME);
         folder.mkdir();
 
-        Reading reading = new Reading();
-        Record record = new Record();
+        ReadingAndPrintPages readingPages = new ReadingAndPrintPages();
+        readingPages.printPages(PATH);
 
-        record.getRecord(PATH);
-        reading.getReading(PATH);
     }
 }
