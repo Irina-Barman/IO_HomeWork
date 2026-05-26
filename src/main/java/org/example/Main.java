@@ -1,21 +1,23 @@
 package org.example;
 
-
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
+    public static void main(String[] args) {
 
-    public static void main(String[] args) throws IOException {
-        String FILE_NAME = "pages.txt";
-        String FOLDER_NAME = "book";
-        String PATH = FOLDER_NAME + File.separator + FILE_NAME;
+        List<Cat> cats = new ArrayList<>();
+        cats.add(new Cat("Barsik", "Don Sphinx", 7.5));
+        cats.add(new Cat("Simon", "Birman", 5.0));
+        cats.add(new Cat("Iris", "Burmese", 6.0));
+        cats.add(new Cat("Masha", "Siamese", 4.5));
 
-        File folder = new File(FOLDER_NAME);
-        folder.mkdir();
+        CatStorage storage = new FileCatStorage("cat", "cat_list.ser");
 
-        ReadingAndPrintPages readingPages = new ReadingAndPrintPages();
-        readingPages.printPages(PATH);
+        storage.save(cats);
+        List<Cat> loadedCats = storage.load();
 
+        CatPrinter printer = new CatPrinter();
+        printer.printNames(loadedCats);
     }
 }
